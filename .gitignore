@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# CHIP-8 files
+build
+roms
+main.exe
