@@ -14,5 +14,8 @@ int main(int argc, char *argv[]) {
     chip8_t chip8;
     initialize(&chip8);
 
+    char *rom_path = argv[1];
+    load_rom(&chip8, rom_path);
+
     return 0;
 }

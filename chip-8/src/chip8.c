@@ -48,7 +48,30 @@ void initialize(chip8_t *chip8) {
     chip8->state = RUNNING;
 }
 
-bool load_rom(chip8_t *chip8, const char *rom_name) {}
+bool load_rom(chip8_t *chip8, const char *rom_path) {
+    FILE *rom = fopen(rom_path, "rb");
+    if (!rom) {
+        fprintf(stderr, "Unable to open rom\n");
+        return false;
+    }
+
+    // Check ROM size
+    fseek(rom, 0, SEEK_END);
+    long rom_size = ftell(rom);
+    rewind(rom);
+    if (rom_size > MAX_ROM_SIZE) {
+        fprintf(stderr, "Error: Rom size too large\n");
+        return false;
+    }
+
+    // Load ROM into CHIP-8 memory
+    if (fread(&chip8->memory[PC_START], 1, rom_size, rom) == 0) {
+        fprintf(stderr, "Error: Could not load ROM into memory\n");
+        return false;
+    }
+
+    return true;
+}
 
 void setup_graphics(sdl_t *sdl) {}
 

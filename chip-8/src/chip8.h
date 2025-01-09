@@ -12,7 +12,7 @@ Properties and methods used by CHIP-8.
 
 #define PC_START 0x200
 #define PC_END 0xFFF
-#define MAX_ROM_SIZE (PC_END - PC_START)
+#define MAX_ROM_SIZE (PC_END - PC_START) // 3,583 bytes
 
 #define FONT_START 0x50
 #define FONT_END 0xA0
