@@ -27,3 +27,6 @@ dist-ssr
 build
 roms
 main.exe
+
+# Test files
+test*.exe
