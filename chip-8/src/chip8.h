@@ -6,6 +6,7 @@ Properties and methods used by CHIP-8.
 #define CHIP8_H
 
 #include <SDL.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 #define MEMORY_SIZE 4096
@@ -51,6 +52,7 @@ typedef struct {
 
 void initialize(chip8_t *chip8);
 bool load_rom(chip8_t *chip8, const char *rom_name);
+long get_rom_size(FILE *fp);
 void setup_graphics(sdl_t *sdl);
 void emulate_cycle(chip8_t *chip8);
 void setup_graphics(sdl_t *sdl);

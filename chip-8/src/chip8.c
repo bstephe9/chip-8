@@ -55,10 +55,7 @@ bool load_rom(chip8_t *chip8, const char *rom_path) {
         return false;
     }
 
-    // Check ROM size
-    fseek(rom, 0, SEEK_END);
-    long rom_size = ftell(rom);
-    rewind(rom);
+    long rom_size = get_rom_size(rom);
     if (rom_size > MAX_ROM_SIZE) {
         fprintf(stderr, "Error: Rom size too large\n");
         return false;
@@ -71,6 +68,13 @@ bool load_rom(chip8_t *chip8, const char *rom_path) {
     }
 
     return true;
+}
+
+long get_rom_size(FILE *fp) {
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    rewind(fp);
+    return size;
 }
 
 void setup_graphics(sdl_t *sdl) {}
