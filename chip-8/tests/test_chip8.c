@@ -75,14 +75,22 @@ void test_should_setup_sdl(void) {
     TEST_ASSERT_NOT_NULL(chip8.sdl.renderer);
 }
 
+void test_should_cleanup_sdl(void) {
+    setup_graphics(&chip8.sdl);
+    cleanup(&chip8.sdl);
+    TEST_ASSERT_NULL(chip8.sdl.window);
+    TEST_ASSERT_NULL(chip8.sdl.renderer);
+}
+
 // Change 'main' to 'SDL_main' to avoid conflict with SDL2's entry point
 int SDL_main(int argc, char *argv[]) {
     UNITY_BEGIN();
     RUN_TEST(test_should_zero_initialize);
     RUN_TEST(test_should_get_correct_rom_file_size);
     RUN_TEST(test_should_read_rom_into_memory);
-    RUN_TEST(test_should_setup_sdl);
     RUN_TEST(test_should_pass_on_valid_rom_path);
     RUN_TEST(test_should_fail_on_invalid_rom_path);
+    RUN_TEST(test_should_setup_sdl);
+    RUN_TEST(test_should_cleanup_sdl);
     return UNITY_END();
 }
