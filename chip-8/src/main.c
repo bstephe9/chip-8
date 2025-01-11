@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     if (!setup_graphics(&chip8.sdl)) exit(EXIT_FAILURE);
 
     char *rom_path = argv[1];
-    read_rom(&chip8.memory[PC_START], rom_path);
+    if (!read_rom(&chip8.memory[PC_START], rom_path)) exit(EXIT_FAILURE);
 
     return 0;
 }
