@@ -6,48 +6,31 @@
 chip8_t chip8;
 char *rom_path = "tests/chip8_roms/IBM_Logo.ch8";
 
-void setUp(void) {
-    initialize(&chip8);
-}
+void setUp(void) { initialize(&chip8); }
 
 void tearDown(void) {}
 
 void test_should_zero_initialize(void) {
     initialize(&chip8);
-    
-    // Test registers
+
     TEST_ASSERT_EQUAL_HEX(0x200, chip8.pc);
     TEST_ASSERT_EQUAL_HEX(0x0, chip8.opcode);
     TEST_ASSERT_EQUAL_HEX(0x0, chip8.idx);
     TEST_ASSERT_EQUAL_HEX(0x0, chip8.sp);
 
-    // Test V registers
-    for (int i = 0; i < 16; i++) {
-        TEST_ASSERT_EQUAL_UINT8(0, chip8.V[i]);
-    }
+    TEST_ASSERT_EACH_EQUAL_UINT8(0, chip8.V, 16);
+    TEST_ASSERT_EACH_EQUAL_UINT16(0, chip8.stack, 16);
+    TEST_ASSERT_EACH_EQUAL_UINT8(0, chip8.gfx, 64 * 32);
 
-    // Test stack
-    for (int i = 0; i < 16; i++) {
-        TEST_ASSERT_EQUAL_UINT16(0, chip8.stack[i]);
-    }
+    // Test memory except the fontset memory range
+    TEST_ASSERT_EACH_EQUAL_UINT8(0, &chip8.memory[0], FONT_START);
+    TEST_ASSERT_EACH_EQUAL_UINT8(0, &chip8.memory[FONT_END],
+                                 MEMORY_SIZE - FONT_END);
 
-    // Test memory
-    for (int i = 0; i < MEMORY_SIZE; i++) {
-        // Skip the font portion of chip8 memory because that is not supposed
-        // to be zero-initialized
-        if (FONT_START <= i && i <= FONT_END) continue;
+    TEST_ASSERT_NULL(chip8.sdl.window);
+    TEST_ASSERT_NULL(chip8.sdl.renderer);
 
-        TEST_ASSERT_EQUAL_UINT8(0, chip8.memory[i]);
-    }
-
-    // Test graphics
-    for (int i = 0; i < 64 * 32; i++) {
-        TEST_ASSERT_EQUAL_UINT8(0, chip8.gfx[i]);
-    }
-
-    // Test SDL object
-    TEST_ASSERT_EQUAL_PTR(NULL, chip8.sdl.window);
-    TEST_ASSERT_EQUAL_PTR(NULL, chip8.sdl.renderer);
+    TEST_ASSERT_EQUAL(chip8.state, RUNNING);
 }
 
 void test_should_get_correct_rom_file_size(void) {
