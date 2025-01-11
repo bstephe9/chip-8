@@ -103,4 +103,10 @@ void emulate_cycle(chip8_t *chip8) {}
 
 void handle_input(chip8_t *chip8) {}
 
-void cleanup(sdl_t *sdl) {}
+void cleanup(sdl_t *sdl) {
+    SDL_DestroyRenderer(sdl->renderer);
+    SDL_DestroyWindow(sdl->window);
+    sdl->window = NULL;
+    sdl->renderer = NULL;
+    SDL_Quit();
+}

@@ -18,5 +18,7 @@ int main(int argc, char *argv[]) {
     char *rom_path = argv[1];
     if (!read_rom(&chip8.memory[PC_START], rom_path)) exit(EXIT_FAILURE);
 
+    cleanup(&chip8.sdl);
+
     return 0;
 }
