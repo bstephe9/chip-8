@@ -5,11 +5,9 @@
 
 chip8_t chip8;
 char *rom_path = "tests/chip8_roms/IBM_Logo.ch8";
-FILE *test_rom;
 
 void setUp(void) {
     initialize(&chip8);
-    test_rom = fopen("tests/chip8_roms/IBM_Logo.ch8", "rb");
 }
 
 void tearDown(void) {}
@@ -53,6 +51,7 @@ void test_should_zero_initialize(void) {
 }
 
 void test_should_get_correct_rom_file_size(void) {
+    FILE *test_rom = fopen(rom_path, "rb");
     long rom_size = get_rom_size(test_rom);
     TEST_ASSERT_EQUAL(132, rom_size);
 }
