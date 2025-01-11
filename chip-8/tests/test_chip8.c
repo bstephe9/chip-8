@@ -46,11 +46,18 @@ void test_should_read_rom_into_memory(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(&buf, &chip8.memory[PC_START], 132);
 }
 
+void test_should_setup_sdl(void) {
+    setup_graphics(&chip8.sdl);
+    TEST_ASSERT_NOT_NULL(chip8.sdl.window);
+    TEST_ASSERT_NOT_NULL(chip8.sdl.renderer);
+}
+
 // Change 'main' to 'SDL_main' to avoid conflict with SDL2's entry point
 int SDL_main(int argc, char *argv[]) {
     UNITY_BEGIN();
     RUN_TEST(test_should_zero_initialize);
     RUN_TEST(test_should_get_correct_rom_file_size);
     RUN_TEST(test_should_read_rom_into_memory);
+    RUN_TEST(test_should_setup_sdl);
     return UNITY_END();
 }
