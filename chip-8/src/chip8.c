@@ -77,7 +77,27 @@ long get_rom_size(FILE *fp) {
     return size;
 }
 
-void setup_graphics(sdl_t *sdl) {}
+bool setup_graphics(sdl_t *sdl) {
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+        printf("Could not initialize SDL: %s\n", SDL_GetError());
+        return false;
+    }
+
+    sdl->window = SDL_CreateWindow("CHIP-8 Emulator", 200, 400, 320, 240, 0);
+    if (sdl->window == NULL) {
+        printf("Could not initialize SDL_Window: %s\n", SDL_GetError());
+        return false;
+    }
+
+    sdl->renderer =
+        SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_ACCELERATED);
+    if (sdl->renderer == NULL) {
+        printf("Could not initialize SDL_Renderer: %s\n", SDL_GetError());
+        return false;
+    }
+
+    return true;
+}
 
 void emulate_cycle(chip8_t *chip8) {}
 

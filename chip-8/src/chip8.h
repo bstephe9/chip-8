@@ -6,14 +6,14 @@ Properties and methods used by CHIP-8.
 #define CHIP8_H
 
 #include <SDL.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define MEMORY_SIZE 4096
 
 #define PC_START 0x200
 #define PC_END 0xFFF
-#define MAX_ROM_SIZE (PC_END - PC_START) // 3,583 bytes
+#define MAX_ROM_SIZE (PC_END - PC_START)  // 3,583 bytes
 
 #define FONT_START 0x50
 #define FONT_END 0xA0
@@ -53,9 +53,8 @@ typedef struct {
 void initialize(chip8_t *chip8);
 long get_rom_size(FILE *fp);
 bool read_rom(unsigned char *buffer, const char *rom_path);
-void setup_graphics(sdl_t *sdl);
+bool setup_graphics(sdl_t *sdl);
 void emulate_cycle(chip8_t *chip8);
-void setup_graphics(sdl_t *sdl);
 void handle_input(chip8_t *chip8);
 void cleanup(sdl_t *sdl);
 
