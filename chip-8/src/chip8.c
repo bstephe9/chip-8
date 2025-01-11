@@ -48,7 +48,7 @@ void initialize(chip8_t *chip8) {
     chip8->state = RUNNING;
 }
 
-bool load_rom(chip8_t *chip8, const char *rom_path) {
+bool read_rom(unsigned char *buffer, const char *rom_path) {
     FILE *rom = fopen(rom_path, "rb");
     if (!rom) {
         fprintf(stderr, "Unable to open rom\n");
@@ -61,8 +61,8 @@ bool load_rom(chip8_t *chip8, const char *rom_path) {
         return false;
     }
 
-    // Load ROM into CHIP-8 memory
-    if (fread(&chip8->memory[PC_START], 1, rom_size, rom) == 0) {
+    // Read ROM into buffer
+    if (fread(buffer, 1, rom_size, rom) == 0) {
         fprintf(stderr, "Error: Could not load ROM into memory\n");
         return false;
     }

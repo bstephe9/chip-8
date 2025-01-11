@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     initialize(&chip8);
 
     char *rom_path = argv[1];
-    load_rom(&chip8, rom_path);
+    read_rom(&chip8.memory[PC_START], rom_path);
 
     return 0;
 }
