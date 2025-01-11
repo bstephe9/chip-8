@@ -4,6 +4,7 @@
 #include "unity/unity.h"
 
 chip8_t chip8;
+char *rom_path = "tests/chip8_roms/IBM_Logo.ch8";
 FILE *test_rom;
 
 void setUp(void) {
@@ -13,7 +14,9 @@ void setUp(void) {
 
 void tearDown(void) {}
 
-void test_initialization(void) {
+void test_should_zero_initialize(void) {
+    initialize(&chip8);
+    
     // Test registers
     TEST_ASSERT_EQUAL_HEX(0x200, chip8.pc);
     TEST_ASSERT_EQUAL_HEX(0x0, chip8.opcode);
@@ -49,7 +52,7 @@ void test_initialization(void) {
     TEST_ASSERT_EQUAL_PTR(NULL, chip8.sdl.renderer);
 }
 
-void test_get_rom_file_size(void) {
+void test_should_get_correct_rom_file_size(void) {
     long rom_size = get_rom_size(test_rom);
     TEST_ASSERT_EQUAL(132, rom_size);
 }
@@ -57,7 +60,7 @@ void test_get_rom_file_size(void) {
 // Change 'main' to 'SDL_main' to avoid conflict with SDL2's entry point
 int SDL_main(int argc, char *argv[]) {
     UNITY_BEGIN();
-    RUN_TEST(test_initialization);
-    RUN_TEST(test_get_rom_file_size);
+    RUN_TEST(test_should_zero_initialize);
+    RUN_TEST(test_should_get_correct_rom_file_size);
     return UNITY_END();
 }
