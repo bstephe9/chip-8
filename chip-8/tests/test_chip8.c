@@ -46,6 +46,16 @@ void test_should_read_rom_into_memory(void) {
     TEST_ASSERT_EQUAL_UINT8_ARRAY(&buf, &chip8.memory[PC_START], 132);
 }
 
+void test_should_pass_on_valid_rom_path(void) {
+    unsigned char buf[132];  // Define a buffer so `read_rom` can be called
+    TEST_ASSERT_TRUE(read_rom(buf, rom_path));
+}
+
+void test_should_fail_on_invalid_rom_path(void) {
+    unsigned char buf[132];
+    TEST_ASSERT_FALSE(read_rom(buf, "invalid/rom/path"));
+}
+
 void test_should_setup_sdl(void) {
     setup_graphics(&chip8.sdl);
     TEST_ASSERT_NOT_NULL(chip8.sdl.window);
@@ -59,5 +69,7 @@ int SDL_main(int argc, char *argv[]) {
     RUN_TEST(test_should_get_correct_rom_file_size);
     RUN_TEST(test_should_read_rom_into_memory);
     RUN_TEST(test_should_setup_sdl);
+    RUN_TEST(test_should_pass_on_valid_rom_path);
+    RUN_TEST(test_should_fail_on_invalid_rom_path);
     return UNITY_END();
 }
