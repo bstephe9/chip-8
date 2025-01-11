@@ -5,10 +5,23 @@
 
 chip8_t chip8;
 char *rom_path = "tests/chip8_roms/IBM_Logo.ch8";
+static FILE *original_stderr = NULL;
 
-void setUp(void) { initialize(&chip8); }
+void setUp(void) {
+    initialize(&chip8);
 
-void tearDown(void) {}
+#ifdef _WIN32
+    original_stderr = freopen("nul", "w", stderr);
+#else
+    original_stderr = freopen("/dev/null", "w", stderr);
+#endif
+}
+
+void tearDown(void) {
+    if (original_stderr) {
+        freopen("/dev/tty", "w", stderr);  // Redirect stderr back to terminal
+    }
+}
 
 void test_should_zero_initialize(void) {
     initialize(&chip8);
