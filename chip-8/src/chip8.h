@@ -7,6 +7,7 @@ Properties and methods used by CHIP-8.
 
 #include <SDL.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #define MEMORY_SIZE 4096
@@ -32,19 +33,19 @@ typedef enum { RUNNING, PAUSED, QUIT } state_t;
 
 // CHIP-8 Object
 typedef struct {
-    unsigned short pc;      // Program counter
-    unsigned short opcode;  // Current opcode
-    unsigned short idx;     // Index register
-    unsigned short sp;      // Stack pointer
+    uint16_t pc;      // Program counter
+    uint16_t opcode;  // Current opcode
+    uint16_t idx;     // Index register
+    uint16_t sp;      // Stack pointer
 
-    unsigned char V[16];                // V-registers (V0-VF)
-    unsigned short stack[16];           // Stack (16 levels)
-    unsigned char memory[MEMORY_SIZE];  // Memory (size = 4k)
-    unsigned char gfx[64 * 32];         // Graphics
-    unsigned char keypad[16];           // Keypad
+    uint8_t V[16];                // V-registers (V0-VF)
+    uint16_t stack[16];           // Stack (16 levels)
+    uint8_t memory[MEMORY_SIZE];  // Memory (size = 4k)
+    uint8_t gfx[64 * 32];         // Graphics
+    uint8_t keypad[16];           // Keypad
 
-    unsigned char delay_timer;  // Delay timer
-    unsigned char sound_timer;  // Sound timer
+    uint8_t delay_timer;  // Delay timer
+    uint8_t sound_timer;  // Sound timer
 
     state_t state;  // Current running state
     sdl_t sdl;      // SDL object
@@ -52,7 +53,7 @@ typedef struct {
 
 void initialize(chip8_t *chip8);
 long get_rom_size(FILE *fp);
-bool read_rom(unsigned char *buffer, const char *rom_path);
+bool read_rom(uint8_t *buffer, const char *rom_path);
 bool setup_graphics(sdl_t *sdl);
 void emulate_cycle(chip8_t *chip8);
 void handle_input(chip8_t *chip8);

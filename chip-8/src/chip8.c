@@ -1,6 +1,7 @@
 #include "chip8.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -48,7 +49,7 @@ void initialize(chip8_t *chip8) {
     chip8->state = RUNNING;
 }
 
-bool read_rom(unsigned char *buffer, const char *rom_path) {
+bool read_rom(uint8_t *buffer, const char *rom_path) {
     FILE *rom = fopen(rom_path, "rb");
     if (!rom) {
         fprintf(stderr, "Unable to open rom\n");
