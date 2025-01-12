@@ -101,7 +101,25 @@ bool setup_graphics(sdl_t *sdl) {
 
 void emulate_cycle(chip8_t *chip8) {}
 
-void handle_input(chip8_t *chip8) {}
+void handle_input(chip8_t *chip8) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                chip8->state = QUIT;
+                return;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        chip8->state = QUIT;
+                        return;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 void cleanup(sdl_t *sdl) {
     SDL_DestroyRenderer(sdl->renderer);
