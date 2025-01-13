@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
 
     while (chip8.state == RUNNING) {
         handle_input(&chip8);
+        emulate_cycle(&chip8);
     }
 
     cleanup(&chip8.sdl);

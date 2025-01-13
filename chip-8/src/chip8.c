@@ -100,7 +100,11 @@ bool setup_graphics(sdl_t *sdl) {
     return true;
 }
 
-void emulate_cycle(chip8_t *chip8) {}
+void emulate_cycle(chip8_t *chip8) {
+    // Fetch opcode
+    chip8->opcode = chip8->memory[chip8->pc] << 8 | chip8->memory[chip8->pc + 1];
+    // chip8->pc += 2; // To avoid segmentation fault for now
+}
 
 void handle_input(chip8_t *chip8) {
     SDL_Event event;
