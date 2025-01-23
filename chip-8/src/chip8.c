@@ -102,8 +102,75 @@ bool setup_graphics(sdl_t *sdl) {
 
 void emulate_cycle(chip8_t *chip8) {
     // Fetch opcode
-    chip8->opcode = chip8->memory[chip8->pc] << 8 | chip8->memory[chip8->pc + 1];
-    // chip8->pc += 2; // To avoid segmentation fault for now
+    chip8->opcode =
+        chip8->memory[chip8->pc] << 8 | chip8->memory[chip8->pc + 1];
+
+    // Increment program counter to next instruction
+    chip8->pc += 2;
+
+    uint16_t X = chip8->opcode & 0x0F00;
+    uint16_t Y = chip8->opcode & 0x00F0;
+
+    uint32_t N = chip8->opcode & 0x0F00;
+    uint32_t NN = chip8->opcode & 0x0FF0;
+    uint32_t NNN = chip8->opcode & 0x0FFF;
+
+    // Decode and execute opcode
+    switch (chip8->opcode & 0xF000) {
+        case 0x0000:
+            switch (chip8->opcode & 0x000F) {
+                case 0x0000:  // 00E0; Clears the screen.
+                    memset(chip8->gfx, 0, sizeof(chip8->gfx));
+                    break;
+                case 0x000E:  // 00EE: Returns from a subroutine.
+                    chip8->sp--;
+                    chip8->pc = chip8->stack[chip8->sp];
+                    break;
+                default:
+            }
+            break;
+        case 0x1000:  // 1NNN; Jumps to address NNN.
+            chip8->pc = NNN;
+            break;
+        case 0x2000:  // 2NNN; Calls subroutine at NNN.
+            chip8->stack[chip8->sp] = chip8->pc;
+            chip8->sp++;
+            chip8->pc = NNN;
+            break;
+        case 0x3000:  // 3XNN; Skips the next instruction if VX equals NN.
+            if (chip8->V[X] == NN)
+                chip8->pc += 2;
+            break;
+        case 0x4000:  // 4XNN; Skips the next instruction if VX does not equal
+                      // NN.
+            if (chip8->V[X] != NN)
+                chip8->pc += 2;
+            break;
+        case 0x5000:  // 5XY0; Skips the next instruction if VX equals VY.
+            if (chip8->V[X] == chip8->V[Y])
+                chip8->pc += 2;
+        case 0xD000:  // DXYN; Draws a sprite at coordinate (VX, VY) that has a
+                      // width of 8 pixels and a height of N pixels.
+            // draw(Vx, Vy, N);
+            break;
+        case 0x8000:
+            switch (chip8->opcode & 0x000F) {
+                case 0x0001:  // 8XY1; Sets VX to VX or VY.
+                    chip8->V[X] |= chip8->V[Y];
+                    break;
+                case 0x0002:  // 8XY2; Sets VX to VX and VY.
+                    chip8->V[X] &= chip8->V[Y];
+                    break;
+                case 0x0003:  // 8XY3; Sets VX to VX xor VY.
+                    chip8->V[X] ^= chip8->V[Y];
+                    break;
+                default:
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 void handle_input(chip8_t *chip8) {
