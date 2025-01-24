@@ -149,12 +149,18 @@ void emulate_cycle(chip8_t *chip8) {
         case 0x5000:  // 5XY0; Skips the next instruction if VX equals VY.
             if (chip8->V[X] == chip8->V[Y])
                 chip8->pc += 2;
-        case 0xD000:  // DXYN; Draws a sprite at coordinate (VX, VY) that has a
-                      // width of 8 pixels and a height of N pixels.
-            // draw(Vx, Vy, N);
+            break;
+        case 0x6000:  // 6XNN; Sets VX to NN.
+            chip8->V[X] = NN;
+            break;
+        case 0x7000:  // 7XNN; Adds NN to VX.
+            chip8->V[X] += NN;
             break;
         case 0x8000:
             switch (chip8->opcode & 0x000F) {
+                case 0x0000:  // 8XY0; Sets VX to the value of VY.
+                    chip8->V[X] = chip8->V[Y];
+                    break;
                 case 0x0001:  // 8XY1; Sets VX to VX or VY.
                     chip8->V[X] |= chip8->V[Y];
                     break;
@@ -168,6 +174,17 @@ void emulate_cycle(chip8_t *chip8) {
                     break;
             }
             break;
+        case 0xA000:  // ANNN; Sets I to the address NNN.
+            chip8->idx = NNN;
+            break;
+        case 0xB000:  // BNNN; Jumps to the address NNN plus V0.
+            chip8->pc = chip8->V[0x0] + NNN;
+            break;
+        case 0xD000:  // DXYN; Draws a sprite at coordinate (VX, VY) that has a
+                      // width of 8 pixels and a height of N pixels.
+            // draw(Vx, Vy, N);
+            break;
+
         default:
             break;
     }
