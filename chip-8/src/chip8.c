@@ -108,8 +108,8 @@ void emulate_cycle(chip8_t *chip8) {
     // Increment program counter to next instruction
     chip8->pc += 2;
 
-    uint16_t X = chip8->opcode & 0x0F00;
-    uint16_t Y = chip8->opcode & 0x00F0;
+    uint16_t X = (chip8->opcode & 0x0F00) >> 8;
+    uint16_t Y = (chip8->opcode & 0x00F0) >> 4;
 
     uint32_t N = chip8->opcode & 0x000F;
     uint32_t NN = chip8->opcode & 0x00FF;
