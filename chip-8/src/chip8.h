@@ -10,6 +10,13 @@ Properties and methods used by CHIP-8.
 #include <stdint.h>
 #include <stdio.h>
 
+#define WINDOW_X 0
+#define WINDOW_Y 50
+#define WINDOW_SCALE 20
+
+#define DISPLAY_WIDTH 64
+#define DISPLAY_HEIGHT 32
+
 #define MEMORY_SIZE 4096
 
 #define PC_START 0x200
@@ -38,11 +45,11 @@ typedef struct {
     uint16_t idx;     // Index register
     uint16_t sp;      // Stack pointer
 
-    uint8_t V[16];                // V-registers (V0-VF)
-    uint16_t stack[16];           // Stack (16 levels)
-    uint8_t memory[MEMORY_SIZE];  // Memory (size = 4k)
-    bool display[64 * 32];        // Graphics
-    uint8_t keypad[16];           // Keypad
+    uint8_t V[16];                                 // V-registers (V0-VF)
+    uint16_t stack[16];                            // Stack (16 levels)
+    uint8_t memory[MEMORY_SIZE];                   // Memory (size = 4k)
+    bool display[DISPLAY_WIDTH * DISPLAY_HEIGHT];  // Graphics
+    uint8_t keypad[16];                            // Keypad
 
     uint8_t delay_timer;  // Delay timer
     uint8_t sound_timer;  // Sound timer

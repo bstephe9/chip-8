@@ -84,7 +84,9 @@ bool setup_graphics(sdl_t *sdl) {
         return false;
     }
 
-    sdl->window = SDL_CreateWindow("CHIP-8 Emulator", 200, 400, 320, 240, 0);
+    sdl->window = SDL_CreateWindow("CHIP-8 Emulator", WINDOW_X, WINDOW_Y,
+                                   DISPLAY_WIDTH * WINDOW_SCALE,
+                                   DISPLAY_HEIGHT * WINDOW_SCALE, 0);
     if (sdl->window == NULL) {
         printf("Could not initialize SDL_Window: %s\n", SDL_GetError());
         return false;
