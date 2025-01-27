@@ -37,7 +37,7 @@ void initialize(chip8_t *chip8) {
     memset(chip8->memory, 0, sizeof(chip8->memory));
 
     // Graphics
-    memset(chip8->gfx, 0, sizeof(chip8->gfx));
+    memset(chip8->display, 0, sizeof(chip8->display));
     memset(&chip8->sdl, 0, sizeof(chip8->sdl));
 
     // Load fontset into memory
@@ -120,7 +120,7 @@ void emulate_cycle(chip8_t *chip8) {
         case 0x0000:
             switch (chip8->opcode & 0x000F) {
                 case 0x0000:  // 00E0; Clears the screen.
-                    memset(chip8->gfx, 0, sizeof(chip8->gfx));
+                    memset(chip8->display, 0, sizeof(chip8->display));
                     break;
                 case 0x000E:  // 00EE: Returns from a subroutine.
                     chip8->sp--;

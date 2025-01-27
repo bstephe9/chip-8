@@ -41,7 +41,7 @@ typedef struct {
     uint8_t V[16];                // V-registers (V0-VF)
     uint16_t stack[16];           // Stack (16 levels)
     uint8_t memory[MEMORY_SIZE];  // Memory (size = 4k)
-    uint8_t gfx[64 * 32];         // Graphics
+    bool display[64 * 32];        // Graphics
     uint8_t keypad[16];           // Keypad
 
     uint8_t delay_timer;  // Delay timer
