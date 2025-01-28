@@ -47,6 +47,7 @@ void initialize(chip8_t *chip8) {
 
     // Set initial state
     chip8->state = RUNNING;
+    chip8->draw = false;
 }
 
 bool read_rom(uint8_t *buffer, const char *rom_path) {
@@ -217,7 +218,6 @@ void emulate_cycle(chip8_t *chip8) {
                 }
             }
             break;
-
         default:
             break;
     }
@@ -241,6 +241,27 @@ void handle_input(chip8_t *chip8) {
                 break;
         }
     }
+}
+
+void update_display(chip8_t *chip8) {
+    SDL_Rect rect = {.x = 0, .y = 0, .w = WINDOW_SCALE, .h = WINDOW_SCALE};
+
+    // Draw each rectangle of the CHIP-8 display to the screen
+    for (size_t i = 0; i < sizeof(chip8->display); i++) {
+        rect.x = (i % DISPLAY_WIDTH) * WINDOW_SCALE;
+        rect.y = (i / DISPLAY_WIDTH) * WINDOW_SCALE;
+
+        // Set draw color
+        uint8_t r = 0, g = 0, b = 0;
+        if (chip8->display[i]) {
+            r = 255, g = 255, b = 255;
+        }
+
+        SDL_SetRenderDrawColor(chip8->sdl.renderer, r, g, b, SDL_ALPHA_OPAQUE);
+        SDL_RenderFillRect(chip8->sdl.renderer, &rect);
+    }
+
+    SDL_RenderPresent(chip8->sdl.renderer);
 }
 
 void cleanup(sdl_t *sdl) {
