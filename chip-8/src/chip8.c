@@ -184,7 +184,38 @@ void emulate_cycle(chip8_t *chip8) {
             break;
         case 0xD000:  // DXYN; Draws a sprite at coordinate (VX, VY) that has a
                       // width of 8 pixels and a height of N pixels.
-            // draw(Vx, Vy, N);
+
+            // Initialize carry flag
+            chip8->V[0xF] = false;
+            chip8->draw = true;
+
+            // Loop through each row of the sprite
+            for (uint32_t i = 0; i < N; i++) {
+                // Get row (byte)
+                uint8_t sprite_row = chip8->memory[chip8->idx + i];
+
+                // For each bit in row (starting from the leftmost bit), XOR
+                // sprite pixel with display pixel
+                for (int j = 0; j <= 7; j++) {
+                    uint8_t current_bit_position = 1 << (7 - j);
+                    uint8_t current_bit = sprite_row & current_bit_position;
+
+                    bool sprite_pixel = (bool)current_bit;
+
+                    uint8_t display_x = chip8->V[X] + j;
+                    uint8_t display_y = chip8->V[Y] + i;
+                    uint16_t display_pixel_index =
+                        (DISPLAY_WIDTH * display_y) + display_x;
+                    bool *display_pixel = &chip8->display[display_pixel_index];
+
+                    // Set carry flag if current display pixel will be unset
+                    if (*display_pixel && sprite_pixel) {
+                        chip8->V[0xF] = true;
+                    }
+
+                    *display_pixel ^= sprite_pixel;
+                }
+            }
             break;
 
         default:

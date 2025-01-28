@@ -56,6 +56,8 @@ typedef struct {
 
     state_t state;  // Current running state
     sdl_t sdl;      // SDL object
+
+    bool draw;  // Draw flag
 } chip8_t;
 
 void initialize(chip8_t *chip8);
