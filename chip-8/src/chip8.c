@@ -173,6 +173,36 @@ void emulate_cycle(chip8_t *chip8) {
                 case 0x0003:  // 8XY3; Sets VX to VX xor VY.
                     chip8->V[X] ^= chip8->V[Y];
                     break;
+                case 0x0004:  // 8XY4; Adds VY to VX. VF is set to 1 when
+                              // there's an overflow, and to 0 when there is
+                              // not.
+                    chip8->V[0xF] = (chip8->V[X] + chip8->V[Y]) > 0xFF;
+                    chip8->V[X] += chip8->V[Y];
+                    break;
+                case 0x0005:  // 8XY5; VY is subtracted from VX. VF is set to 0
+                              // when there's an underflow, and 1 when there is
+                              // not.
+                    chip8->V[0xF] = chip8->V[X] < chip8->V[Y];
+                    chip8->V[X] -= chip8->V[Y];
+                    break;
+                case 0x0006:  // 8XY6; Shifts VX to the right by 1, then stores
+                              // the least significant bit of VX prior to the
+                              // shift into VF.
+                    chip8->V[0xF] = chip8->V[X] & 0x0001;
+                    chip8->V[X] >>= 1;
+                    break;
+                case 0x0007:  // 8XY7; Sets VX to VY minus VX. VF is set to 0
+                              // when there's an underflow, and 1 when there is
+                              // not.
+                    chip8->V[0xF] = chip8->V[Y] < chip8->V[X];
+                    chip8->V[X] = chip8->V[Y] - chip8->V[X];
+                    break;
+                case 0x000E:  // 8XYE; Shifts VX to the left by 1, then sets VF
+                              // to 1 if the most significant bit of VX prior to
+                              // that shift was set, or to 0 if it was unset.
+                    chip8->V[0xF] = (chip8->V[X] & 0x80) >> 7;
+                    chip8->V[X] <<= 1;
+                    break;
                 default:
                     break;
             }
