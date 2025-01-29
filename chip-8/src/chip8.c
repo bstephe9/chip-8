@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 unsigned char chip8_fontset[FONT_MEMORY_SIZE] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0,  // 0
@@ -48,6 +49,9 @@ void initialize(chip8_t *chip8) {
     // Set initial state
     chip8->state = RUNNING;
     chip8->draw = false;
+
+    // Seed random number generator
+    srand(time(NULL));
 }
 
 bool read_rom(uint8_t *buffer, const char *rom_path) {
@@ -207,11 +211,21 @@ void emulate_cycle(chip8_t *chip8) {
                     break;
             }
             break;
+        case 0x9000:  // 9XY0; Skips the next instruction if VX does not equal
+                      // VY.
+            if (chip8->V[X] != chip8->V[Y])
+                chip8->pc += 2;
+            break;
         case 0xA000:  // ANNN; Sets I to the address NNN.
             chip8->idx = NNN;
             break;
         case 0xB000:  // BNNN; Jumps to the address NNN plus V0.
             chip8->pc = chip8->V[0x0] + NNN;
+            break;
+        case 0xC000:  // CXNN; Sets VX to the result of a bitwise AND operation
+                      // on a random number and NN.
+            uint8_t random_num = rand() % 256;  // Range: [0, 255]
+            chip8->V[X] = random_num & NN;
             break;
         case 0xD000:  // DXYN; Draws a sprite at coordinate (VX, VY) that has a
                       // width of 8 pixels and a height of N pixels.
