@@ -262,6 +262,39 @@ void emulate_cycle(chip8_t *chip8) {
                 }
             }
             break;
+        case 0xF000:
+            switch (chip8->opcode & 0x00FF) {
+                case 0x001E:  // FX1E; Adds VX to I.
+                    chip8->idx += chip8->V[X];
+                    break;
+                case 0x0029:  // FX29; Sets I to the location of the sprite for
+                              // the character in VX.
+                    chip8->idx = FONT_START + (chip8->V[X] * FONT_HEIGHT);
+                    break;
+                case 0x0033:  // FX33; Stores the binary-coded decimal
+                              // representation of VX in I.
+                    uint8_t n = chip8->V[X];
+                    chip8->memory[chip8->idx + 2] = n % 10;  // Hundreds digit
+                    n /= 10;
+                    chip8->memory[chip8->idx + 1] = n % 10;  // Tens digit
+                    chip8->memory[chip8->idx] = n / 10;      // Ones digit
+                    break;
+                case 0x0055:  // FX55; Stores from V0 to VX (including VX) in
+                              // memory, starting at address I.
+                    for (size_t i = 0; i <= X; i++) {
+                        chip8->memory[chip8->idx + i] = chip8->V[i];
+                    }
+                    break;
+                case 0x0065:  // FX65; Fills from V0 to VX (including VX) with
+                              // values from memory, starting at address I.
+                    for (size_t i = 0; i <= X; i++) {
+                        chip8->V[i] = chip8->memory[chip8->idx + i];
+                    }
+                    break;
+                default:
+                    break;
+            }
+            break;
         default:
             break;
     }
