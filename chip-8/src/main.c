@@ -28,6 +28,8 @@ int main(int argc, char *argv[]) {
             update_display(&chip8);
             chip8.draw = false;
         }
+
+        update_timers(&chip8);
     }
 
     cleanup(&chip8.sdl);
