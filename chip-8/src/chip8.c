@@ -32,10 +32,11 @@ void initialize(chip8_t *chip8) {
     chip8->idx = 0x0;
     chip8->sp = 0x0;
 
-    // V-Registers, stack, memory
+    // V-Registers, stack, memory, keypad
     memset(chip8->V, 0, sizeof(chip8->V));
     memset(chip8->stack, 0, sizeof(chip8->stack));
     memset(chip8->memory, 0, sizeof(chip8->memory));
+    memset(chip8->keypad, false, sizeof(chip8->keypad));
 
     // Graphics
     memset(chip8->display, 0, sizeof(chip8->display));

@@ -50,7 +50,7 @@ typedef struct {
     uint16_t stack[16];                            // Stack (16 levels)
     uint8_t memory[MEMORY_SIZE];                   // Memory (size = 4k)
     bool display[DISPLAY_WIDTH * DISPLAY_HEIGHT];  // Graphics
-    uint8_t keypad[16];                            // Keypad
+    bool keypad[16];                               // Keypad
 
     uint8_t delay_timer;  // Delay timer
     uint8_t sound_timer;  // Sound timer
