@@ -207,8 +207,7 @@ void emulate_cycle(chip8_t *chip8) {
                     chip8->V[0xF] = (chip8->V[X] & 0x80) >> 7;
                     chip8->V[X] <<= 1;
                     break;
-                default:
-                    break;
+                default: break;
             }
             break;
         case 0x9000:  // 9XY0; Skips the next instruction if VX does not equal
@@ -291,12 +290,10 @@ void emulate_cycle(chip8_t *chip8) {
                         chip8->V[i] = chip8->memory[chip8->idx + i];
                     }
                     break;
-                default:
-                    break;
+                default: break;
             }
             break;
-        default:
-            break;
+        default: break;
     }
 }
 
@@ -304,14 +301,10 @@ void handle_input(chip8_t *chip8) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_QUIT:
-                chip8->state = QUIT;
-                return;
+            case SDL_QUIT: chip8->state = QUIT; return;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        chip8->state = QUIT;
-                        return;
+                    case SDLK_ESCAPE: chip8->state = QUIT; return;
                     case SDLK_1: chip8->keypad[0x1] = true; break;
                     case SDLK_2: chip8->keypad[0x2] = true; break;
                     case SDLK_3: chip8->keypad[0x3] = true; break;
@@ -352,8 +345,7 @@ void handle_input(chip8_t *chip8) {
                     default: break;
                 }
                 break;
-            default:
-                break;
+            default: break;
         }
     }
 }
