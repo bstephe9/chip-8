@@ -261,8 +261,50 @@ void emulate_cycle(chip8_t *chip8) {
                 }
             }
             break;
+        case 0xE000:
+            switch (chip8->opcode & 0x00F0) {
+                case 0x0090:  // EX9E; Skips the next instruction if the key
+                              // stored in VX is pressed.
+                    if (chip8->keypad[chip8->V[X]])
+                        chip8->pc += 2;
+                    break;
+                case 0x00A0:  // EXA1; Skips the next instruction if the key
+                              // stored in VX is not pressed.
+                    if (!chip8->keypad[chip8->V[X]])
+                        chip8->pc += 2;
+                    break;
+                default: break;
+            }
+            break;
         case 0xF000:
             switch (chip8->opcode & 0x00FF) {
+                case 0x0007:  // FX07; Sets VX to the value of the delay timer.
+                    chip8->V[X] = chip8->delay_timer;
+                    break;
+                case 0x000A:  // FX0A; A key press is awaited, and then stored
+                              // in VX.
+
+                    // Loop through keypad to see if a key has been pressed in
+                    // this frame.
+                    bool key_pressed = false;
+                    for (size_t i = 0; i < sizeof(chip8->keypad); i++) {
+                        if (chip8->keypad[i]) {
+                            chip8->V[X] = chip8->keypad[i];
+                            key_pressed = true;
+                        }
+                    }
+
+                    // Go back to this instruction if a key hasn't been pressed
+                    if (!key_pressed)
+                        chip8->pc -= 2;
+
+                    break;
+                case 0x0015:  // FX15; Sets the delay timer to VX.
+                    chip8->delay_timer = chip8->V[X];
+                    break;
+                case 0x0018:  // FX18; Sets the sound timer to VX.
+                    chip8->sound_timer = chip8->V[X];
+                    break;
                 case 0x001E:  // FX1E; Adds VX to I.
                     chip8->idx += chip8->V[X];
                     break;
