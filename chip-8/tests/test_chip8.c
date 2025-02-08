@@ -70,13 +70,13 @@ void test_should_fail_on_invalid_rom_path(void) {
 }
 
 void test_should_setup_sdl(void) {
-    setup_graphics(&chip8.sdl);
+    setup_sdl(&chip8.sdl);
     TEST_ASSERT_NOT_NULL(chip8.sdl.window);
     TEST_ASSERT_NOT_NULL(chip8.sdl.renderer);
 }
 
 void test_should_cleanup_sdl(void) {
-    setup_graphics(&chip8.sdl);
+    setup_sdl(&chip8.sdl);
     cleanup(&chip8.sdl);
     TEST_ASSERT_NULL(chip8.sdl.window);
     TEST_ASSERT_NULL(chip8.sdl.renderer);
