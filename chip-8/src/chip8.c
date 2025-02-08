@@ -1,5 +1,6 @@
 #include "chip8.h"
 
+#include <SDL_mixer.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -84,8 +85,8 @@ long get_rom_size(FILE *fp) {
     return size;
 }
 
-bool setup_graphics(sdl_t *sdl) {
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+bool setup_sdl(sdl_t *sdl) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
         printf("Could not initialize SDL: %s\n", SDL_GetError());
         return false;
     }
@@ -102,6 +103,19 @@ bool setup_graphics(sdl_t *sdl) {
         SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_ACCELERATED);
     if (sdl->renderer == NULL) {
         printf("Could not initialize SDL_Renderer: %s\n", SDL_GetError());
+        return false;
+    }
+
+    // Initialize playback audio device
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 2048) == -1) {
+        printf("Could not initialize audio device: %s\n", Mix_GetError());
+        return false;
+    }
+
+    // Load beep sound
+    sdl->sound = Mix_LoadWAV(SOUND_PATH);
+    if (sdl->sound == NULL) {
+        printf("Could not load sound file: %s\n", SDL_GetError());
         return false;
     }
 
@@ -421,6 +435,11 @@ void update_timers(chip8_t *chip8) {
 
     if (chip8->sound_timer > 0) {
         chip8->sound_timer--;
+        if (!Mix_Playing(-1)) {
+            Mix_PlayChannel(-1, chip8->sdl.sound, -1);
+        }
+    } else {
+        Mix_HaltChannel(-1);
     }
 }
 
@@ -429,5 +448,7 @@ void cleanup(sdl_t *sdl) {
     SDL_DestroyWindow(sdl->window);
     sdl->window = NULL;
     sdl->renderer = NULL;
+    Mix_FreeChunk(sdl->sound);
+    Mix_CloseAudio();
     SDL_Quit();
 }

@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     chip8_t chip8;
     initialize(&chip8);
-    if (!setup_graphics(&chip8.sdl))
+    if (!setup_sdl(&chip8.sdl))
         exit(EXIT_FAILURE);
 
     char *rom_path = argv[1];

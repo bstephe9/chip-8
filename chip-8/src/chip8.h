@@ -6,6 +6,7 @@ Properties and methods used by CHIP-8.
 #define CHIP8_H
 
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -16,6 +17,8 @@ Properties and methods used by CHIP-8.
 
 #define DISPLAY_WIDTH 64
 #define DISPLAY_HEIGHT 32
+
+#define SOUND_PATH "data/beep.wav"
 
 #define MEMORY_SIZE 4096
 
@@ -34,6 +37,7 @@ Properties and methods used by CHIP-8.
 typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
+    Mix_Chunk *sound;
 } sdl_t;
 
 // CHIP-8 States
@@ -64,7 +68,7 @@ typedef struct {
 void initialize(chip8_t *chip8);
 long get_rom_size(FILE *fp);
 bool read_rom(uint8_t *buffer, const char *rom_path);
-bool setup_graphics(sdl_t *sdl);
+bool setup_sdl(sdl_t *sdl);
 void handle_input(chip8_t *chip8);
 void emulate_cycle(chip8_t *chip8);
 void update_display(chip8_t *chip8);
