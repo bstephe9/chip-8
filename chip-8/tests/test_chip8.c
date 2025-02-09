@@ -33,7 +33,7 @@ void test_should_zero_initialize(void) {
 
     TEST_ASSERT_EACH_EQUAL_UINT8(0, chip8.V, 16);
     TEST_ASSERT_EACH_EQUAL_UINT16(0, chip8.stack, 16);
-    TEST_ASSERT_EACH_EQUAL_UINT8(0, chip8.gfx, 64 * 32);
+    TEST_ASSERT_EACH_EQUAL_UINT8(0, chip8.display, 64 * 32);
 
     // Test memory except the fontset memory range
     TEST_ASSERT_EACH_EQUAL_UINT8(0, &chip8.memory[0], FONT_START);
