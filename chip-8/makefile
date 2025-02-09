@@ -1,7 +1,8 @@
 # Variables and flags
 CC = gcc
-CFLAGS = `sdl2-config --cflags` -Wall -Wextra -g
-LDFLAGS = `sdl2-config --libs`
+CFLAGS = -Wall -Wextra -g
+LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_Mixer
+EMFLAGS = -sUSE_SDL=2 -sUSE_SDL_MIXER=2
 
 # Directories
 SRC_DIR = src
@@ -11,8 +12,8 @@ UNITY_DIR = $(TESTS_DIR)/unity
 
 # Files
 TARGET = main
-SRC_FILES = main.c chip8.c
-OBJS = $(SRC_FILES:%.c=$(BUILD_DIR)/%.o)
+SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
+OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRC_FILES))
 CLEAN_FILES = *.exe *.o *.html *.wasm
 TEST_FILE = $(TESTS_DIR)/test_chip8.c
 TEST_TARGET = test_chip8
@@ -24,12 +25,19 @@ $(TARGET): $(OBJS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(BUILD_DIR)  # Ensure the build directory exists
-	$(CC) -c $< -o $@ $(CFLAGS)
-
-debug: $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS) -DDEBUG
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
 tests: $(TEST_TARGET)
+
+# Generate emcc js/wasm files and move to public/
+local: $(SRC_FILES)
+	echo "var Module = { canvas: document.getElementById('canvas') };" > temp_pre.js
+	emcc $(SRC_FILES) -s -o $(TARGET).js $(CFLAGS) $(EMFLAGS) --pre-js temp_pre.js
+	rm temp_pre.js
+	# Remove local paths in file
+	sed '/^\/\/ include: C:.*/d; /^\/\/ end include: C:.*/d' $(TARGET).js > cleaned.js
+	mv cleaned.js $(TARGET).js
+	mv $(TARGET).js $(TARGET).wasm ../public
 
 $(TEST_TARGET): $(TEST_FILE)
 	$(CC) $(CFLAGS) -o $@ $(SRC_DIR)/chip8.c $(UNITY_DIR)/unity.c $^ $(LDFLAGS)
