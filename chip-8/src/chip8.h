@@ -69,6 +69,7 @@ void initialize(chip8_t *chip8);
 long get_rom_size(FILE *fp);
 bool read_rom(uint8_t *buffer, const char *rom_path);
 bool setup_sdl(sdl_t *sdl);
+void mainloop(void *arg);
 void handle_input(chip8_t *chip8);
 void emulate_cycle(chip8_t *chip8);
 void update_display(chip8_t *chip8);

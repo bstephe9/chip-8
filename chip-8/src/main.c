@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include "chip8.h"
 
 int main(int argc, char *argv[]) {
@@ -20,39 +24,55 @@ int main(int argc, char *argv[]) {
     if (!read_rom(&chip8.memory[PC_START], rom_path))
         exit(EXIT_FAILURE);
 
-    while (chip8.state == RUNNING) {
-        uint64_t start_time = SDL_GetPerformanceCounter();
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop_arg(mainloop, (void *)&chip8, 0, 1);
+#else
+    while (1) {
+        mainloop(&chip8);
+    }
+#endif
+    return 0;
+}
 
-        handle_input(&chip8);
+void mainloop(void *arg) {
+    chip8_t *chip8 = (chip8_t *)arg;
 
-        // 11 instructions per frame = 660 instructions per second
-        for (size_t i = 0; i < 11; i++) {
-            emulate_cycle(&chip8);
-
-            // If draw instruction, break to only draw once during this frame
-            if ((chip8.opcode >> 12) == 0xD)
-                break;
-        }
-
-        if (chip8.draw) {
-            update_display(&chip8);
-            chip8.draw = false;
-        }
-
-        update_timers(&chip8);
-
-        uint64_t end_time = SDL_GetPerformanceCounter();
-        double elapsed_time =
-            (end_time - start_time) / (double)SDL_GetPerformanceFrequency();
-
-        // Delay for the remainder of this current frame
-        double delay_amount = 16.67f - elapsed_time;
-        if (delay_amount > 0) {
-            SDL_Delay(delay_amount);
-        }
+    if (chip8->state != RUNNING) {
+        cleanup(&chip8->sdl);
+#ifdef __EMSCRIPTEN__
+        emscripten_cancel_main_loop();
+#else
+        exit(0);
+#endif
     }
 
-    cleanup(&chip8.sdl);
+    uint64_t start_time = SDL_GetPerformanceCounter();
 
-    return 0;
+    handle_input(chip8);
+
+    // 11 instructions per frame = 660 instructions per second
+    for (size_t i = 0; i < 11; i++) {
+        emulate_cycle(chip8);
+
+        // If draw instruction, break to only draw once during this frame
+        if ((chip8->opcode >> 12) == 0xD)
+            break;
+    }
+
+    if (chip8->draw) {
+        update_display(chip8);
+        chip8->draw = false;
+    }
+
+    update_timers(chip8);
+
+    uint64_t end_time = SDL_GetPerformanceCounter();
+    double elapsed_time =
+        (end_time - start_time) / (double)SDL_GetPerformanceFrequency();
+
+    // Delay for the remainder of this current frame
+    double delay_amount = 16.67f - elapsed_time;
+    if (delay_amount > 0) {
+        SDL_Delay(delay_amount);
+    }
 }
