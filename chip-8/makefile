@@ -30,7 +30,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 tests: $(TEST_TARGET)
 
 # Generate emcc js/wasm files and move to public/
-local: $(SRC_FILES)
+web: $(SRC_FILES)
 	echo "var Module = { canvas: document.getElementById('canvas') };" > temp_pre.js
 	emcc $(SRC_FILES) -s -o $(TARGET).js $(CFLAGS) $(EMFLAGS) --pre-js temp_pre.js
 	rm temp_pre.js
