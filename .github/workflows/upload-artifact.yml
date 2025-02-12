@@ -15,7 +15,7 @@ jobs:
         run: ls -l ./roms || echo "roms folder not found"
 
       - name: Upload roms artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: roms
           path: ./roms  # Uploads everything inside the roms folder
