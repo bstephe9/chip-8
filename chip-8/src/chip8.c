@@ -139,6 +139,10 @@ void emulate_cycle(chip8_t *chip8) {
     uint32_t NN = chip8->opcode & 0x00FF;
     uint32_t NNN = chip8->opcode & 0x0FFF;
 
+    bool key_pressed = false;
+    uint8_t n = 0;
+    uint8_t random_num = 0;
+
     // Decode and execute opcode
     switch (chip8->opcode & 0xF000) {
         case 0x0000:
@@ -150,7 +154,7 @@ void emulate_cycle(chip8_t *chip8) {
                     chip8->sp--;
                     chip8->pc = chip8->stack[chip8->sp];
                     break;
-                default:
+                default: break;
             }
             break;
         case 0x1000:  // 1NNN; Jumps to address NNN.
@@ -240,7 +244,7 @@ void emulate_cycle(chip8_t *chip8) {
             break;
         case 0xC000:  // CXNN; Sets VX to the result of a bitwise AND operation
                       // on a random number and NN.
-            uint8_t random_num = rand() % 256;  // Range: [0, 255]
+            random_num = rand() % 256;  // Range: [0, 255]
             chip8->V[X] = random_num & NN;
             break;
         case 0xD000:  // DXYN; Draws a sprite at coordinate (VX, VY) that has a
@@ -303,7 +307,6 @@ void emulate_cycle(chip8_t *chip8) {
 
                     // Loop through keypad to see if a key has been pressed in
                     // this frame.
-                    bool key_pressed = false;
                     for (size_t i = 0; i < sizeof(chip8->keypad); i++) {
                         if (chip8->keypad[i]) {
                             chip8->V[X] = chip8->keypad[i];
@@ -331,7 +334,7 @@ void emulate_cycle(chip8_t *chip8) {
                     break;
                 case 0x0033:  // FX33; Stores the binary-coded decimal
                               // representation of VX in I.
-                    uint8_t n = chip8->V[X];
+                    n = chip8->V[X];
                     chip8->memory[chip8->idx + 2] = n % 10;  // Hundreds digit
                     n /= 10;
                     chip8->memory[chip8->idx + 1] = n % 10;  // Tens digit

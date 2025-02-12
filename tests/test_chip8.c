@@ -84,6 +84,10 @@ void test_should_cleanup_sdl(void) {
 
 // Change 'main' to 'SDL_main' to avoid conflict with SDL2's entry point
 int SDL_main(int argc, char *argv[]) {
+    // To avoid unused parameter warnings
+    (void)argc;
+    (void)argv;
+
     UNITY_BEGIN();
     RUN_TEST(test_should_zero_initialize);
     RUN_TEST(test_should_get_correct_rom_file_size);
