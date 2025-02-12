@@ -13,12 +13,12 @@ Properties and methods used by CHIP-8.
 
 #define WINDOW_X 0
 #define WINDOW_Y 50
-#define WINDOW_SCALE 20
+#define WINDOW_SCALE 15
 
 #define DISPLAY_WIDTH 64
 #define DISPLAY_HEIGHT 32
 
-#define SOUND_PATH "data/beep.wav"
+#define SOUND_PATH "chip-8/data/beep.wav"
 
 #define MEMORY_SIZE 4096
 

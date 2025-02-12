@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#include "../src/chip8.h"
+#include "../chip-8/src/chip8.h"
 #include "unity/unity.h"
 
 chip8_t chip8;
-char *rom_path = "tests/chip8_roms/IBM_Logo.ch8";
+char *rom_path = "./tests/test_roms/IBM_Logo.ch8";
 static FILE *original_stderr = NULL;
 
 void setUp(void) {

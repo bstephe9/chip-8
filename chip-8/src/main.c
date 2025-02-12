@@ -10,10 +10,12 @@
 #include "chip8.h"
 
 int main(int argc, char *argv[]) {
+#ifndef __EMSCRIPTEN__
     if (argc < 2) {
         fprintf(stderr, "Usage: chip8.exe <rom_name>\n");
         exit(EXIT_FAILURE);
     }
+#endif
 
     chip8_t chip8;
     initialize(&chip8);

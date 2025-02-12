@@ -106,6 +106,7 @@ bool setup_sdl(sdl_t *sdl) {
         return false;
     }
 
+#ifndef UNIT_TEST
     // Initialize playback audio device
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 2048) == -1) {
         printf("Could not initialize audio device: %s\n", Mix_GetError());
@@ -118,6 +119,7 @@ bool setup_sdl(sdl_t *sdl) {
         printf("Could not load sound file: %s\n", SDL_GetError());
         return false;
     }
+#endif
 
     return true;
 }
