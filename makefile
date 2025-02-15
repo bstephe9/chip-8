@@ -10,7 +10,7 @@ PUBLIC_DIR = public
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_Mixer
-EMFLAGS = -sUSE_SDL=2 -sUSE_SDL_MIXER=2 --embed-file roms --embed-file $(CHIP8_DIR)/data
+EMFLAGS = -sUSE_SDL=2 -sUSE_SDL_MIXER=2  --embed-file roms --embed-file $(CHIP8_DIR)/data
 
 # Files
 TARGET = main
@@ -36,15 +36,9 @@ $(TEST_TARGET): $(TEST_FILE)
 	./$(TEST_TARGET)
 	rm $(TEST_TARGET)
 
-# Generate emcc js/wasm files and move to public/
+# Generate emcc output
 web: $(SRC_FILES)
-	echo "Module = { canvas: document.getElementById('canvas') };" > temp_pre.js
-	emcc $(SRC_FILES) -s -o $(TARGET).js $(CFLAGS) $(EMFLAGS) --pre-js temp_pre.js
-	rm temp_pre.js
-	# Remove local paths in file
-	sed '/^\/\/ include: C:.*/d; /^\/\/ end include: C:.*/d' $(TARGET).js > cleaned.js
-	mv cleaned.js $(TARGET).js
-	mv $(TARGET).js $(TARGET).wasm $(PUBLIC_DIR)
+	emcc $(SRC_FILES) -o $(PUBLIC_DIR)/index.html $(CFLAGS) $(EMFLAGS)
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)

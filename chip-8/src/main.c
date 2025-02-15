@@ -18,6 +18,10 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
+    for (int i = 0; i < argc; i++) {
+        printf("%s\n", argv[i]);
+    }
+
     chip8_t chip8;
     initialize(&chip8);
     if (!setup_sdl(&chip8.sdl))
