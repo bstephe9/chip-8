@@ -23,14 +23,6 @@ jobs:
           version: 3.1.74
           actions-cache-folder: "emsdk-cache"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Download and copy roms
         run: |
           git clone https://github.com/kripod/chip8-roms.git
@@ -42,23 +34,11 @@ jobs:
       - name: Compile with emcc
         run: make web
 
-      - name: Ensure Emscripten output files exist
-        run: |
-          for file in "./public/main.js" "./public/main.wasm"; do
-            if [ ! -f "$file" ]; then
-              echo "Error: Required file '$file' is missing."
-              exit 1
-            fi
-          done
-
-      - name: Build the app
-        run: pnpm build
-
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
         with:
           name: production-files
-          path: ./dist
+          path: ./public
 
   deploy:
     name: Deploy
@@ -73,10 +53,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: production-files
-          path: ./dist
+          path: ./public
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./public
