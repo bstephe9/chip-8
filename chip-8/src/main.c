@@ -18,16 +18,13 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
-    for (int i = 0; i < argc; i++) {
-        printf("%s\n", argv[i]);
-    }
-
     chip8_t chip8;
     initialize(&chip8);
     if (!setup_sdl(&chip8.sdl))
         exit(EXIT_FAILURE);
 
-    char *rom_path = argv[1];
+    // char *rom_path = argv[1];
+    char *rom_path = "./roms/Airplane.ch8"; // TODO: Remove
     if (!read_rom(&chip8.memory[PC_START], rom_path))
         exit(EXIT_FAILURE);
 
