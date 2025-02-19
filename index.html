@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <h1>CHIP-8 Emulator</h1>
+    <canvas class="emscripten" id="canvas" width=300 height=200 oncontextmenu="event.preventDefault()" tabindex=-1>
+    </canvas>
+    <button id="main">Run Main</button>
+    <script type='text/javascript'>
+      var canvasElement = document.getElementById('canvas');
+
+      // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+      // application robust, you may want to override this behavior before shipping!
+      // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+      canvasElement.addEventListener('webglcontextlost', (e) => {
+        alert('WebGL context lost. You will need to reload the page.');
+        e.preventDefault();
+      }, false);
+      var Module = {
+        print(...args) {
+          console.log(...args);
+        },
+        canvas: canvasElement,
+        totalDependencies: 0,
+        monitorRunDependencies(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+        }
+      };
+    </script>
+    <script type="text/javascript" src="public/chip8.js"></script>
+    <script type="text/javascript" src="src/js/index.js"></script>
+  </body>
+
+</html>

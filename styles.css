@@ -1,0 +1,30 @@
+body {
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: none;
+}
+
+h1 {
+  margin-left: 1%;
+}
+
+#canvas {
+  margin-left: 20px;
+}
+
+.emscripten {
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.canvas-border {
+  border: 1px solid black;
+}
+
+/* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+canvas.emscripten {
+  border: 0px none;
+  background-color: black;
+}

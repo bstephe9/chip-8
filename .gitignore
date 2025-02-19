@@ -26,7 +26,6 @@ dist-ssr
 # CHIP-8 files
 build
 roms
-main.exe
-
-# Test files
-test*.exe
+*.exe
+chip8.js
+chip8.wasm
