@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "../chip-8/src/chip8.h"
+#include "../chip-8/chip8.h"
 #include "unity/unity.h"
 
 chip8_t chip8;

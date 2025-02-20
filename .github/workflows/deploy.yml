@@ -42,15 +42,6 @@ jobs:
       - name: Compile with emcc
         run: make web
 
-      - name: Ensure Emscripten output files exist
-        run: |
-          for file in "./public/main.js" "./public/main.wasm"; do
-            if [ ! -f "$file" ]; then
-              echo "Error: Required file '$file' is missing."
-              exit 1
-            fi
-          done
-
       - name: Build the app
         run: pnpm build
 

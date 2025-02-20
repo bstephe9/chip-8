@@ -18,7 +18,7 @@ Properties and methods used by CHIP-8.
 #define DISPLAY_WIDTH 64
 #define DISPLAY_HEIGHT 32
 
-#define SOUND_PATH "chip-8/data/beep.wav"
+#define SOUND_PATH "chip-8/sounds/beep.wav"
 
 #define MEMORY_SIZE 4096
 
