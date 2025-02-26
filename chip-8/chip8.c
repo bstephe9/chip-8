@@ -32,6 +32,8 @@ void initialize(chip8_t *chip8) {
     chip8->opcode = 0x0;
     chip8->idx = 0x0;
     chip8->sp = 0x0;
+    chip8->delay_timer = 0;
+    chip8->sound_timer = 0;
 
     // V-Registers, stack, memory, keypad
     memset(chip8->V, 0, sizeof(chip8->V));
