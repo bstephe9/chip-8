@@ -26,6 +26,7 @@ dist-ssr
 # CHIP-8 files
 build
 roms
+chip8
 chip8.exe
 test*.exe
 /public/chip8*
