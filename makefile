@@ -16,8 +16,8 @@ CLEAN_FILES = $(BUILD_DIR) $(TARGET) $(TEST_TARGET) dist
 # Variables and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -g
-LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_Mixer
-EMFLAGS = -sUSE_SDL=2 -sUSE_SDL_MIXER=2 --embed-file roms --embed-file $(CHIP8_DIR)/sounds -sEXPORTED_RUNTIME_METHODS=callMain -sINVOKE_RUN=0
+LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_mixer
+EMFLAGS = -sUSE_SDL=2 -sUSE_SDL_MIXER=2 --embed-file roms --embed-file $(CHIP8_DIR)/sounds -sEXPORTED_RUNTIME_METHODS=callMain,cwrap -sINVOKE_RUN=0 -sMODULARIZE=1 -sEXPORT_NAME=createModule -sEXPORT_ES6
 
 all: $(TARGET)
 
