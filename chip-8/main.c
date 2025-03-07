@@ -9,6 +9,14 @@
 
 #include "chip8.h"
 
+chip8_t chip8;
+
+void some_function(char *rom) {
+    initialize(&chip8);
+    setup_sdl(&chip8.sdl);
+    read_rom(&chip8.memory[PC_START], rom);
+}
+
 int main(int argc, char *argv[]) {
     (void)argc;
 #ifndef __EMSCRIPTEN__
@@ -18,7 +26,6 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
-    chip8_t chip8;
     initialize(&chip8);
     if (!setup_sdl(&chip8.sdl))
         exit(EXIT_FAILURE);

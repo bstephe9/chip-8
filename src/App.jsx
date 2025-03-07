@@ -1,31 +1,48 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import createModule from "../public/chip8.js"
 import "./App.css"
 
 function App() {
-  const moduleRef = useRef(null);
+  const moduleRef = useRef(null)
+  const [roms, setRoms] = useState([]);
 
   useEffect(() => {
     const initModule = async () => {
-      console.log("UseEffect called...");
-      const moduleInstance = await createModule();
-      moduleInstance["canvas"] = document.getElementById("canvas");
-      moduleRef.current = moduleInstance;
-      console.log("Module created...");
+      const moduleInstance = await createModule()
+      moduleInstance["canvas"] = document.getElementById("canvas")
+      moduleRef.current = moduleInstance
+      const romList = getRoms(moduleInstance);
+      setRoms(romList);
     };
 
-    initModule();
+    initModule()
   }, []);
 
   const handleClick = (event) => {
-    console.log('Button clicked!', event);
     moduleRef.current.callMain(["./roms/Airplane.ch8"])
+  };
+
+  const loadRom = (romPath) => {
+    moduleRef.current.ccall('some_function', null, ['string'], [`./roms/${romPath}`])
+  }
+
+  const getRoms = (moduleInstance) => {
+    if (!moduleInstance) return [];
+    const romDir = moduleInstance.FS.readdir("/roms");
+    return romDir.filter((file) => file !== "." && file !== "..");
   };
 
   return (
     <div className="app">
       <h1>CHIP-8 Emulator</h1>
       <button style={{ display: "block" }} onClick={handleClick}>Click me</button>
+      <ul>
+        {roms.map((rom, index) => (
+          <li key={index} onClick={() => loadRom(rom)} style={{ cursor: "pointer", color: "blue" }}>
+            {rom}
+          </li>
+        ))}
+      </ul>
       <canvas style={{ background: "blue" }} id="canvas" width="800" height="600"></canvas>
     </div>
   )
