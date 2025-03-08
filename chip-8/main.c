@@ -11,12 +11,6 @@
 
 chip8_t chip8;
 
-void some_function(char *rom) {
-    initialize(&chip8);
-    setup_sdl(&chip8.sdl);
-    read_rom(&chip8.memory[PC_START], rom);
-}
-
 int main(int argc, char *argv[]) {
     (void)argc;
 #ifndef __EMSCRIPTEN__
@@ -35,20 +29,18 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
 
 #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop_arg(mainloop, (void *)&chip8, 0, 1);
+    emscripten_set_main_loop(mainloop, 0, true);
 #else
     while (1) {
-        mainloop(&chip8);
+        mainloop();
     }
 #endif
     return 0;
 }
 
-void mainloop(void *arg) {
-    chip8_t *chip8 = (chip8_t *)arg;
-
-    if (chip8->state != RUNNING) {
-        cleanup(&chip8->sdl);
+void mainloop(void) {
+    if (chip8.state != RUNNING) {
+        cleanup(&chip8.sdl);
 #ifdef __EMSCRIPTEN__
         emscripten_cancel_main_loop();
 #else
@@ -58,23 +50,23 @@ void mainloop(void *arg) {
 
     uint64_t start_time = SDL_GetPerformanceCounter();
 
-    handle_input(chip8);
+    handle_input(&chip8);
 
     // 11 instructions per frame = 660 instructions per second
     for (size_t i = 0; i < 11; i++) {
-        emulate_cycle(chip8);
+        emulate_cycle(&chip8);
 
         // If draw instruction, break to only draw once during this frame
-        if ((chip8->opcode >> 12) == 0xD)
+        if ((chip8.opcode >> 12) == 0xD)
             break;
     }
 
-    if (chip8->draw) {
-        update_display(chip8);
-        chip8->draw = false;
+    if (chip8.draw) {
+        update_display(&chip8);
+        chip8.draw = false;
     }
 
-    update_timers(chip8);
+    update_timers(&chip8);
 
     uint64_t end_time = SDL_GetPerformanceCounter();
     double elapsed_time =
@@ -85,4 +77,12 @@ void mainloop(void *arg) {
     if (delay_amount > 0) {
         SDL_Delay(delay_amount);
     }
+}
+
+void reload(const char *rom) {
+    initialize(&chip8);
+    if (!setup_sdl(&chip8.sdl))
+        exit(EXIT_FAILURE);
+    if (!read_rom(&chip8.memory[PC_START], rom))
+        exit(EXIT_FAILURE);
 }

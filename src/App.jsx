@@ -22,8 +22,8 @@ function App() {
     moduleRef.current.callMain(["./roms/Airplane.ch8"])
   };
 
-  const loadRom = (romPath) => {
-    moduleRef.current.ccall('some_function', null, ['string'], [`./roms/${romPath}`])
+  const reload = (romPath) => {
+    moduleRef.current.ccall('reload', null, ['string'], [`./roms/${romPath}`])
   }
 
   const getRoms = (moduleInstance) => {
@@ -38,7 +38,7 @@ function App() {
       <button style={{ display: "block" }} onClick={handleClick}>Click me</button>
       <ul>
         {roms.map((rom, index) => (
-          <li key={index} onClick={() => loadRom(rom)} style={{ cursor: "pointer", color: "blue" }}>
+          <li key={index} onClick={() => reload(rom)} style={{ cursor: "pointer", color: "blue" }}>
             {rom}
           </li>
         ))}
