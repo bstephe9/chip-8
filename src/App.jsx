@@ -4,45 +4,50 @@ import "./App.css"
 
 function App() {
   const moduleRef = useRef(null)
-  const [roms, setRoms] = useState([]);
+  const [roms, setRoms] = useState([])
+  const [programStarted, setProgramStarted] = useState(false)
 
   useEffect(() => {
     const initModule = async () => {
       const moduleInstance = await createModule()
       moduleInstance["canvas"] = document.getElementById("canvas")
       moduleRef.current = moduleInstance
-      const romList = getRoms(moduleInstance);
-      setRoms(romList);
-    };
+      const romList = getRoms(moduleInstance)
+      setRoms(romList)
+    }
 
     initModule()
-  }, []);
-
-  const handleClick = (event) => {
-    moduleRef.current.callMain(["./roms/Airplane.ch8"])
-  };
-
-  const reload = (romPath) => {
-    moduleRef.current.ccall('reload', null, ['string'], [`./roms/${romPath}`])
-  }
+  }, [])
 
   const getRoms = (moduleInstance) => {
-    if (!moduleInstance) return [];
-    const romDir = moduleInstance.FS.readdir("/roms");
+    if (!moduleInstance) return []
+    const romDir = moduleInstance.FS.readdir("/roms")
     return romDir.filter((file) =>
       file !== "." &&
       file !== ".." &&
       file.endsWith(".ch8")
-    );
-  };
+    )
+  }
+
+  const handleClick = (romFile) => {
+    !programStarted ? startCHIP8(romFile) : reloadCHIP8(romFile)
+  }
+
+  const startCHIP8 = (romFile) => {
+    moduleRef.current.callMain([`./roms/${romFile}`])
+    setProgramStarted(true)
+  }
+
+  const reloadCHIP8 = (romFile) => {
+    moduleRef.current.ccall('reload', null, ['string'], [`./roms/${romFile}`])
+  }
 
   return (
     <div className="app">
       <h1>CHIP-8 Emulator</h1>
-      <button style={{ display: "block" }} onClick={handleClick}>Click me</button>
       <ul>
         {roms.map((rom, index) => (
-          <li key={index} onClick={() => reload(rom)} style={{ cursor: "pointer", color: "blue" }}>
+          <li key={index} onClick={() => handleClick(rom)} style={{ cursor: "pointer", color: "blue" }}>
             {rom}
           </li>
         ))}
