@@ -2,6 +2,14 @@
 
 ## How to Run
 
+### Online
+
+Run the CHIP-8 interpreter and play some games online here: 
+
+- https://bstephe9.github.io/chip-8/
+
+Roms source: https://github.com/kripod/chip8-roms/tree/master/games
+
 ### Local Build
 
 Build the standalone CHIP-8 interpreter and pass in a `.ch8` rom:
