@@ -29,7 +29,11 @@ function App() {
   const getRoms = (moduleInstance) => {
     if (!moduleInstance) return [];
     const romDir = moduleInstance.FS.readdir("/roms");
-    return romDir.filter((file) => file !== "." && file !== "..");
+    return romDir.filter((file) =>
+      file !== "." &&
+      file !== ".." &&
+      file.endsWith(".ch8")
+    );
   };
 
   return (
