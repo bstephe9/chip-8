@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import createModule from "../public/chip8.js"
 import "./App.css"
+import RomList from "./components/RomList/RomList.jsx"
 
 function App() {
   const moduleRef = useRef(null)
@@ -43,17 +44,13 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <h1>CHIP-8 Emulator</h1>
-      <ul>
-        {roms.map((rom, index) => (
-          <li key={index} onClick={() => handleClick(rom)} style={{ cursor: "pointer", color: "blue" }}>
-            {rom}
-          </li>
-        ))}
-      </ul>
-      <canvas style={{ background: "blue" }} id="canvas" width="800" height="600"></canvas>
-    </div>
+    <>
+      <h1 style= {{ marginTop: "16px" }}>CHIP-8 Emulator</h1>
+      <div className="content">
+        <canvas style={{ background: "blue" }} id="canvas" width="800" height="600"></canvas>
+        <RomList itemList={roms} handleClick={handleClick} />
+      </div>
+    </>
   )
 }
 
