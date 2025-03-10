@@ -13,7 +13,7 @@ Properties and methods used by CHIP-8.
 
 #define WINDOW_X 0
 #define WINDOW_Y 50
-#define WINDOW_SCALE 15
+#define WINDOW_SCALE 13
 
 #define DISPLAY_WIDTH 64
 #define DISPLAY_HEIGHT 32

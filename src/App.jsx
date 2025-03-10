@@ -47,7 +47,7 @@ function App() {
     <>
       <h1 style= {{ marginTop: "16px" }}>CHIP-8 Emulator</h1>
       <div className="content">
-        <canvas style={{ background: "blue" }} id="canvas" width="800" height="600"></canvas>
+        <canvas style={{ background: "black" }} id="canvas" width="832"></canvas>
         <RomList itemList={roms} handleClick={handleClick} />
       </div>
     </>
