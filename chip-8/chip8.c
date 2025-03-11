@@ -368,7 +368,9 @@ void handle_input(chip8_t *chip8) {
             case SDL_QUIT: chip8->state = QUIT; return;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
+#ifndef __EMSCRIPTEN__
                     case SDLK_ESCAPE: chip8->state = QUIT; return;
+#endif
                     case SDLK_1: chip8->keypad[0x1] = true; break;
                     case SDLK_2: chip8->keypad[0x2] = true; break;
                     case SDLK_3: chip8->keypad[0x3] = true; break;
