@@ -30,6 +30,9 @@ pnpm dev
 
 ## Controls
 
+- `p` = Pause
+- `Esc` = Exit program (gcc build only)
+
 ### CHIP-8 Keypad
 
 #### Original Keypad

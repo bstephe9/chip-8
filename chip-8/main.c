@@ -39,19 +39,32 @@ int main(int argc, char *argv[]) {
 }
 
 void mainloop(void) {
-    if (chip8.state != RUNNING) {
-        cleanup(&chip8.sdl);
+    uint64_t start_time = SDL_GetPerformanceCounter();
+    handle_input(&chip8);
+
+    switch (chip8.state) {
+        case RUNNING: process_frame(); break;
+        case PAUSED: break;
+        case QUIT: cleanup(&chip8.sdl);
 #ifdef __EMSCRIPTEN__
-        emscripten_cancel_main_loop();
+            emscripten_cancel_main_loop();
 #else
-        exit(0);
+            exit(0);
 #endif
     }
 
-    uint64_t start_time = SDL_GetPerformanceCounter();
+    uint64_t end_time = SDL_GetPerformanceCounter();
+    double elapsed_time =
+        (end_time - start_time) / (double)SDL_GetPerformanceFrequency();
 
-    handle_input(&chip8);
+    // Delay for the remainder of this current frame
+    double delay_amount = 16.67f - elapsed_time;
+    if (delay_amount > 0) {
+        SDL_Delay(delay_amount);
+    }
+}
 
+void process_frame() {
     // 11 instructions per frame = 660 instructions per second
     for (size_t i = 0; i < 11; i++) {
         emulate_cycle(&chip8);
@@ -67,16 +80,6 @@ void mainloop(void) {
     }
 
     update_timers(&chip8);
-
-    uint64_t end_time = SDL_GetPerformanceCounter();
-    double elapsed_time =
-        (end_time - start_time) / (double)SDL_GetPerformanceFrequency();
-
-    // Delay for the remainder of this current frame
-    double delay_amount = 16.67f - elapsed_time;
-    if (delay_amount > 0) {
-        SDL_Delay(delay_amount);
-    }
 }
 
 void reload(const char *rom) {
