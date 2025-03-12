@@ -7,6 +7,7 @@ Properties and methods used by CHIP-8.
 
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -19,6 +20,7 @@ Properties and methods used by CHIP-8.
 #define DISPLAY_HEIGHT 32
 
 #define SOUND_PATH "chip-8/sounds/beep.wav"
+#define FONT_PATH "chip-8/fonts/ARCADECLASSIC.TTF"
 
 #define MEMORY_SIZE 4096
 
@@ -33,11 +35,17 @@ Properties and methods used by CHIP-8.
 
 #define DEFAULT_PC_INCREMENT 2
 
+extern const SDL_Color BLACK;
+extern const SDL_Color WHITE;
+extern const SDL_Color RED;
+
 // SDL Object
 typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
     Mix_Chunk *sound;
+    TTF_Font *font;
+    SDL_Point paused_text_pos;
 } sdl_t;
 
 // CHIP-8 States
@@ -74,6 +82,7 @@ void handle_input(chip8_t *chip8);
 void process_frame(void);
 void emulate_cycle(chip8_t *chip8);
 void update_display(chip8_t *chip8);
+void draw_text(const char *text, SDL_Color color, SDL_Point pos, sdl_t *sdl);
 void update_timers(chip8_t *chip8);
 void cleanup(sdl_t *sdl);
 void reload(const char *rom);

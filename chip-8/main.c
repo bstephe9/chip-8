@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,14 +45,16 @@ void mainloop(void) {
 
     switch (chip8.state) {
         case RUNNING: process_frame(); break;
-        case PAUSED: break;
-        case QUIT: cleanup(&chip8.sdl);
+        case PAUSED: Mix_HaltChannel(-1); break;
+        case QUIT: cleanup(&chip8.sdl); break;
 #ifdef __EMSCRIPTEN__
             emscripten_cancel_main_loop();
 #else
             exit(0);
 #endif
     }
+
+    update_display(&chip8);
 
     uint64_t end_time = SDL_GetPerformanceCounter();
     double elapsed_time =
@@ -72,11 +75,6 @@ void process_frame() {
         // If draw instruction, break to only draw once during this frame
         if ((chip8.opcode >> 12) == 0xD)
             break;
-    }
-
-    if (chip8.draw) {
-        update_display(&chip8);
-        chip8.draw = false;
     }
 
     update_timers(&chip8);

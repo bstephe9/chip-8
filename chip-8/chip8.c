@@ -1,11 +1,16 @@
 #include "chip8.h"
 
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+const SDL_Color BLACK = {0, 0, 0, 255};
+const SDL_Color WHITE = {255, 255, 255, 255};
+const SDL_Color RED = {255, 0, 0, 255};
 
 unsigned char chip8_fontset[FONT_MEMORY_SIZE] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0,  // 0
@@ -107,6 +112,19 @@ bool setup_sdl(sdl_t *sdl) {
         printf("Could not initialize SDL_Renderer: %s\n", SDL_GetError());
         return false;
     }
+
+    if (TTF_Init() == -1) {
+        printf("Could not initialize SDL_TTF: %s\n", TTF_GetError());
+        return false;
+    }
+
+    sdl->font = TTF_OpenFont(FONT_PATH, 24);
+    if (sdl->font == NULL) {
+        printf("Could not load font file: %s\n", TTF_GetError());
+        return false;
+    }
+
+    sdl->paused_text_pos = (SDL_Point){.x = 15, .y = 10};
 
 #ifndef UNIT_TEST
     // Initialize playback audio device
@@ -428,17 +446,26 @@ void update_display(chip8_t *chip8) {
         rect.x = (i % DISPLAY_WIDTH) * WINDOW_SCALE;
         rect.y = (i / DISPLAY_WIDTH) * WINDOW_SCALE;
 
-        // Set draw color
-        uint8_t r = 0, g = 0, b = 0;
-        if (chip8->display[i]) {
-            r = 255, g = 255, b = 255;
-        }
-
-        SDL_SetRenderDrawColor(chip8->sdl.renderer, r, g, b, SDL_ALPHA_OPAQUE);
+        SDL_Color draw_color = chip8->display[i] ? WHITE : BLACK;
+        SDL_SetRenderDrawColor(chip8->sdl.renderer, draw_color.r, draw_color.g,
+                               draw_color.b, draw_color.a);
         SDL_RenderFillRect(chip8->sdl.renderer, &rect);
     }
 
+    if (chip8->state == PAUSED) {
+        draw_text("PAUSED", RED, chip8->sdl.paused_text_pos, &chip8->sdl);
+    }
+
     SDL_RenderPresent(chip8->sdl.renderer);
+}
+
+void draw_text(const char *text, SDL_Color color, SDL_Point pos, sdl_t *sdl) {
+    SDL_Surface *text_surface = TTF_RenderText_Solid(sdl->font, text, color);
+    SDL_Texture *text_texture;
+    text_texture = SDL_CreateTextureFromSurface(sdl->renderer, text_surface);
+    SDL_Rect dest = {pos.x, pos.y, text_surface->w, text_surface->h};
+    SDL_RenderCopy(sdl->renderer, text_texture, NULL, &dest);
+    SDL_RenderPresent(sdl->renderer);
 }
 
 void update_timers(chip8_t *chip8) {
@@ -461,6 +488,7 @@ void cleanup(sdl_t *sdl) {
     SDL_DestroyWindow(sdl->window);
     sdl->window = NULL;
     sdl->renderer = NULL;
+    TTF_Quit();
     Mix_FreeChunk(sdl->sound);
     Mix_CloseAudio();
     SDL_Quit();
