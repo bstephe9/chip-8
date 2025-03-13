@@ -227,7 +227,7 @@ void emulate_cycle(chip8_t *chip8) {
                 case 0x0005:  // 8XY5; VY is subtracted from VX. VF is set to 0
                               // when there's an underflow, and 1 when there is
                               // not.
-                    chip8->V[0xF] = chip8->V[X] < chip8->V[Y];
+                    chip8->V[0xF] = chip8->V[X] > chip8->V[Y];
                     chip8->V[X] -= chip8->V[Y];
                     break;
                 case 0x0006:  // 8XY6; Shifts VX to the right by 1, then stores
