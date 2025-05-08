@@ -159,7 +159,6 @@ void emulate_cycle(chip8_t *chip8) {
     uint32_t NN = chip8->opcode & 0x00FF;
     uint32_t NNN = chip8->opcode & 0x0FFF;
 
-    bool key_pressed = false;
     uint8_t n = 0;
     uint8_t random_num = 0;
 
@@ -324,19 +323,38 @@ void emulate_cycle(chip8_t *chip8) {
                     break;
                 case 0x000A:  // FX0A; A key press is awaited, and then stored
                               // in VX.
+                    static bool key_pressed = false;
+                    static uint8_t key = 0xFF;
 
                     // Loop through keypad to see if a key has been pressed in
                     // this frame.
-                    for (size_t i = 0; i < sizeof(chip8->keypad); i++) {
+                    for (uint8_t i = 0; i < sizeof(chip8->keypad); i++) {
                         if (chip8->keypad[i]) {
-                            chip8->V[X] = chip8->keypad[i];
+                            key = i;
                             key_pressed = true;
+                            break;
                         }
                     }
 
-                    // Go back to this instruction if a key hasn't been pressed
-                    if (!key_pressed)
+                    // If key has been pressed, repeat this instruction until
+                    // it has been released
+                    if (key_pressed) {
+                        // if key not released yet, go back to previous
+                        // instruction
+                        if (chip8->keypad[key]) {
+                            chip8->pc -= 2;
+                            // otherwise, store the key and reset variables
+                        } else {
+                            chip8->V[X] = key;
+                            key = 0xFF;
+                            key_pressed = false;
+                            break;
+                        }
+                    } else {
+                        // Go back to this instruction if a key hasn't been
+                        // pressed
                         chip8->pc -= 2;
+                    }
 
                     break;
                 case 0x0015:  // FX15; Sets the delay timer to VX.
